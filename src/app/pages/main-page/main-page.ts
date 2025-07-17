@@ -6,6 +6,7 @@ import { TasksService } from '../services/tasks-service';
 import { TaskList } from '../components/task-list/task-list';
 import { ShareModule } from '../../share.module';
 import { TaskDetails } from '../components/task-details/task-details';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-main-page',
@@ -16,17 +17,21 @@ import { TaskDetails } from '../components/task-details/task-details';
 export class MainPage {
   public task: string = '';
 
-  constructor(public taskService: TasksService) {}
+  constructor(public taskService: TasksService) {
+    this.taskService.tasks$.pipe(map((data)=> console.log(data)))
+  }
 
   public onSubmit(): void {
     const currentTasks = this.taskService.taskList$.getValue();
     const newTask: Tasks = {
       id: currentTasks.length + 1,
-      name: this.task,
+      title: this.task,
       description: "",
       subTasks: [],
       completed: false
     };
+
+    this.taskService.addTask(newTask)
     
     const updatedTasks = [...currentTasks, newTask];
 
@@ -36,6 +41,7 @@ export class MainPage {
 
   public onClear(): void {
     this.taskService.clearTaskList();
+    this.taskService.clearTaskList()
   }
 
 

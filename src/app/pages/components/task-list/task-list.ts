@@ -20,7 +20,7 @@ export class TaskList {
   }
 
   private getTask(): Observable<Tasks[]> {
-    return this.taskService.taskList$.pipe(
+    return this.taskService.tasks$.pipe(
       map((tasks) => this.sortTasks(tasks))
     );
   }

@@ -1,5 +1,5 @@
 export const environment = {
     production: false,
     location: 'local',
-    apiUrl: 'https://localhost:44385/api'  // Development API endpoint
+    apiUrl: 'https://todo-api-noj5.onrender.com/api'  // Development API endpoint
   };

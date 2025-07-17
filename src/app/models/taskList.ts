@@ -1,7 +1,7 @@
 
 export interface Tasks {
   id: number;
-  name: string;
+  title: string;
   description: string;
   subTasks: SubTasks[],
   completed: boolean;

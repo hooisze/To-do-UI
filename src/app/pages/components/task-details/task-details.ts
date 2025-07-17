@@ -13,41 +13,45 @@ import { SubTasks, Tasks } from '../../../models/taskList';
 })
 export class TaskDetails {
   public newSubTask: string = '';
+  public currentTask: Tasks[]
 
   constructor(public taskService: TasksService) {
     this.taskService.currentTask$?.pipe(map((tasks) => console.log(tasks)));
+    this.currentTask = [this.taskService.currentTask$.getValue()];
   }
 
-  public addSubTask( subTask: string): void {
+  public addSubTask(subTask: string): void {
     console.log(subTask)
-    const currentTasks = this.taskService.currentTask$.getValue();
+    const currentTask = this.taskService.currentTask$.getValue()
+    
     const newSubTask: SubTasks = {
-      id: currentTasks.subTasks.length + 1,
+      id:currentTask.subTasks.length + 1,
       name: subTask,
       completed: false
     };
 
-    currentTasks.subTasks.push(newSubTask);
+    currentTask.subTasks.push(newSubTask);
+    this.currentTask = [currentTask]
     this.newSubTask = ""
   }
 
   public updateTask(updatedTask: Tasks): void {
 
-    const currentTasks = this.taskService.taskList$.getValue();
+    console.log(this.currentTask)
+    if(this.currentTask.length === 0)
+      this.currentTask = [this.taskService.currentTask$.getValue()]
 
-    const updatedTasks = currentTasks.map((task) =>
+    const updatedTasks = this.currentTask.map((task) =>
       task.id === updatedTask.id ? { ...task, ...updatedTask } : task
     );
-
-
+    this.taskService.updateTask((updatedTask.id.toString()), updatedTask)
 
     this.taskService.taskList$.next(updatedTasks);
   }
 
   public removeTask(taskId: number): void {
-    const currentTasks = this.taskService.taskList$.getValue();
 
-    const updatedTasks = currentTasks.filter((task) => task.id !== taskId);
+    const updatedTasks = this.currentTask.filter((task) => task.id !== taskId);
 
     this.taskService.taskList$.next(updatedTasks);
     this.taskService.resetCurrentTask()
